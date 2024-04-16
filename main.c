@@ -8,34 +8,48 @@ int input_key[] = {};
 
 void enterKey(){
   int n = 0;
+  int key = 0;
 
   printf("Enter: ");
   while(1) {
-    input_key[n] = _getch();
-    if(input_key[n] == 3) break; // CTRL + C
+    key = _getch();
+    if(key == 7) break; // CTRL + G
+    input_key[n] = key;
     printf("%d ", input_key[n]);
     n++;
   }
 }
 
-
 void repeatKey(){
-  keybd_event('J', 0, 0, 0);
+  // try to convert to uppercase and check
+  for (int i=0; input_key[i] != '\0' && input_key[i] != -1; i++){
+    keybd_event((BYTE)input_key[i], 0, 0, 0); // maybe will make working when preese same key for along time
+    keybd_event((BYTE)input_key[i], 0, KEYEVENTF_KEYUP, 0);
 
-  keybd_event('J', 0, KEYEVENTF_KEYUP, 0);
+    // keybd_event('J', 0, 0, 0);
+    // keybd_event('J', 0, KEYEVENTF_KEYUP, 0);
+  }
 }
 
+void displayKey(){
+  printf("\nRepeat: ");
+  int n = 0;
+  while (input_key[n] != '\0' && input_key[n] != -1) {
+    printf("%d ", input_key[n]);
+    n++;
+  }
+  printf("\nRepeat: ");
+  n = 0;
+  while (input_key[n] != '\0' && input_key[n] != -1) {
+    printf("%c ", input_key[n]);
+    n++;
+  }
+}
 
 int main(int argc, char *argv[]) {
   enterKey();
-
-  // printf("\n%lld",sizeof(input_key[0]));
-  printf("\n%lld",*(&input_key+1)-input_key);
-  
-  printf("\nRepeat: ");
-  for (int i=0; input_key[i] != '\0' && input_key[i] != -1; i++) {
-    printf("%d ", input_key[i]);
-  }
+  // displayKey();
+  repeatKey();
 
   return 0; 
 }
